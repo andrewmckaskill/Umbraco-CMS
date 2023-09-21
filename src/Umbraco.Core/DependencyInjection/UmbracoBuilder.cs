@@ -349,6 +349,8 @@ namespace Umbraco.Cms.Core.DependencyInjection
             Services.AddUnique<IDictionaryService, DictionaryService>();
             Services.AddUnique<ITemporaryMediaService, TemporaryMediaService>();
             Services.AddUnique<IMediaImportService, MediaImportService>();
+
+            Services.AddUnique<IRecurringBackgroundJobStatusService, RecurringBackgroundJobStatusService>();
         }
     }
 }

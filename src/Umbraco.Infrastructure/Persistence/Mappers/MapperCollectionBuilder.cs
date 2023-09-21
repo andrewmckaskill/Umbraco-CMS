@@ -55,6 +55,7 @@ public class MapperCollectionBuilder : SetCollectionBuilderBase<MapperCollection
         Add<AuditEntryMapper>();
         Add<ConsentMapper>();
         Add<LogViewerQueryMapper>();
+        Add<RecurringBackgroundJobStatusMapper>();
         return this;
     }
 }

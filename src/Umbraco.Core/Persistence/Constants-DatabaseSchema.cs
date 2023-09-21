@@ -87,6 +87,8 @@ public static partial class Constants
             public const string LogViewerQuery = TableNamePrefix + "LogViewerQuery";
 
             public const string CreatedPackageSchema = TableNamePrefix + "CreatedPackageSchema";
+
+            public const string RecurringBackgroundJobStatus = TableNamePrefix + "RecurringBackgroundJobStatus";
         }
     }
 }

@@ -37,7 +37,7 @@ public class ManagementApiComposer : IComposer
                 .AddDictionary()
                 .AddHealthChecks())
             .AddRedirectUrl()
-            .AddBackgroundJobs()
+            .AddRecurringBackgroundJobStatus()
             .AddTags()
             .AddTrackedReferences()
             .AddTemporaryFiles()

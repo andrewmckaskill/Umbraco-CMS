@@ -47,6 +47,7 @@ public static partial class Constants
         public const string ConfigNuCache = ConfigPrefix + "NuCache";
         public const string ConfigPlugins = ConfigPrefix + "Plugins";
         public const string ConfigRequestHandler = ConfigPrefix + "RequestHandler";
+        public const string ConfigRecurringBackgroundJobStatus = ConfigPrefix + "RecurringBackgroundJobStatus";
         public const string ConfigRuntime = ConfigPrefix + "Runtime";
         public const string ConfigRuntimeMode = ConfigRuntime + ":Mode";
         public const string ConfigRuntimeMinification = ConfigPrefix + "RuntimeMinification";

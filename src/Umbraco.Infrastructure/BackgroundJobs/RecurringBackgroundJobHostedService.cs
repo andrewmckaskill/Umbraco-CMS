@@ -67,14 +67,13 @@ public class RecurringBackgroundJobHostedService<TJob> : RecurringHostedServiceB
     {
         _logger.LogDebug($"Job {_jobName} checking");
         var executingNotification = new Notifications.RecurringBackgroundJobExecutingNotification(_job, new EventMessages());
-        await _eventAggregator.PublishAsync(executingNotification);
+
 
         try
         {
 
             if (_runtimeState.Level != RuntimeLevel.Run)
             {
-                await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobIgnoredNotification(_job, new EventMessages()).WithStateFrom(executingNotification));
                 _logger.LogDebug($"Job {_jobName} not running as runlevel not yet ready");
                 return;
             }
@@ -82,7 +81,6 @@ public class RecurringBackgroundJobHostedService<TJob> : RecurringHostedServiceB
             // Don't run on replicas nor unknown role servers
             if (!_job.ServerRoles.Contains(_serverRoleAccessor.CurrentServerRole))
             {
-                await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobIgnoredNotification(_job, new EventMessages()).WithStateFrom(executingNotification));
                 _logger.LogDebug($"Job {_jobName} not running on this server role");
                 return;
             }
@@ -90,12 +88,13 @@ public class RecurringBackgroundJobHostedService<TJob> : RecurringHostedServiceB
             // Ensure we do not run if not main domain, but do NOT lock it
             if (!_mainDom.IsMainDom)
             {
-                await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobIgnoredNotification(_job, new EventMessages()).WithStateFrom(executingNotification));
                 _logger.LogDebug($"Job {_jobName} not running as not MainDom");
                 return;
             }
 
             _logger.LogDebug($"Job {_jobName} executing");
+
+            await _eventAggregator.PublishAsync(executingNotification);
 
             await _job.RunJobAsync();
             await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobExecutedNotification(_job, new EventMessages()).WithStateFrom(executingNotification));
@@ -110,24 +109,4 @@ public class RecurringBackgroundJobHostedService<TJob> : RecurringHostedServiceB
 
     }
 
-    public override async Task StartAsync(CancellationToken cancellationToken)
-    {
-        var startingNotification = new Notifications.RecurringBackgroundJobStartingNotification(_job, new EventMessages());
-        await _eventAggregator.PublishAsync(startingNotification);
-
-        await base.StartAsync(cancellationToken);
-
-        await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobStartedNotification(_job, new EventMessages()).WithStateFrom(startingNotification));
-
-    }
-
-    public override async Task StopAsync(CancellationToken cancellationToken)
-    {
-        var stoppingNotification = new Notifications.RecurringBackgroundJobStoppingNotification(_job, new EventMessages());
-        await _eventAggregator.PublishAsync(stoppingNotification);
-
-        await base.StopAsync(cancellationToken);
-
-        await _eventAggregator.PublishAsync(new Notifications.RecurringBackgroundJobStoppedNotification(_job, new EventMessages()).WithStateFrom(stoppingNotification));
-    }
 }

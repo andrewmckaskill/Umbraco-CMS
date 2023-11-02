@@ -25,6 +25,7 @@ using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.Configuration.Models;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Diagnostics;
+using Umbraco.Cms.Core.Events;
 using Umbraco.Cms.Core.Extensions;
 using Umbraco.Cms.Core.Hosting;
 using Umbraco.Cms.Core.IO;
@@ -46,6 +47,7 @@ using Umbraco.Cms.Infrastructure.DependencyInjection;
 using Umbraco.Cms.Infrastructure.HostedServices;
 using Umbraco.Cms.Infrastructure.HostedServices.ServerRegistration;
 using Umbraco.Cms.Infrastructure.Migrations.Install;
+using Umbraco.Cms.Infrastructure.Notifications;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Infrastructure.Persistence.SqlSyntax;
 using Umbraco.Cms.Web.Common;
@@ -228,7 +230,10 @@ public static partial class UmbracoBuilderExtensions
         builder.Services.AddHostedService<QueuedHostedService>();
         builder.Services.AddSingleton(RecurringBackgroundJobHostedService.CreateHostedServiceFactory);
         builder.Services.AddHostedService<RecurringBackgroundJobHostedServiceRunner>();
-        
+
+        builder.Services.AddSingleton<INotificationAsyncHandler<RecurringBackgroundJobExecutingNotification>, NotificationHandlers.ExecutingNotificationHandler>();
+        builder.Services.AddSingleton<INotificationAsyncHandler<RecurringBackgroundJobExecutedNotification>, NotificationHandlers.ExecutedNotificationHandler>();
+        builder.Services.AddSingleton<INotificationAsyncHandler<RecurringBackgroundJobFailedNotification>, NotificationHandlers.FailedNotificationHandler>();
 
         return builder;
     }
